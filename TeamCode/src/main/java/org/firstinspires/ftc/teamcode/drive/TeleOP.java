@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 
 @TeleOp(group = "drive")
 public class TeleOP extends LinearOpMode {
@@ -15,8 +16,8 @@ public class TeleOP extends LinearOpMode {
         while (!isStopRequested()){
             drive.setWeightedDrivePower(
                     new Pose2d(
-                            gamepad1.left_stick_y / 2,
-                            gamepad1.left_stick_x / 2,
+                            -gamepad1.left_stick_y / 2,
+                            -gamepad1.left_stick_x / 2,
                             -gamepad1.right_stick_x / 2
                     )
             );
@@ -42,15 +43,7 @@ public class TeleOP extends LinearOpMode {
             }
 
             //Set power to arm
-            if (gamepad1.dpad_up){
-                drive.armBase.setPower(0.3);
-            }
-            else if (gamepad1.dpad_down){
-                drive.armBase.setPower(-0.3);
-            }
-            else {
-                drive.armBase.setPower(0);
-            }
+            drive.armBase.setPower(gamepad2.right_stick_y / 3);
 
             if (gamepad2.a){
                 drive.claw.setPosition(1);
@@ -59,7 +52,19 @@ public class TeleOP extends LinearOpMode {
                 drive.claw.setPosition(0);
             }
 
-            drive.clawArm.setPosition(drive.clawArm.getPosition() + gamepad2.left_stick_y / 100);
+            if (gamepad1.dpad_up) {
+                drive.launcher.setPosition(0.42);
+            }
+            else if (gamepad1.dpad_down) {
+                drive.launcher.setPosition(0.6);
+            }
+
+            if (gamepad2.left_stick_y > 0.1) {
+                drive.clawArm.setPosition(drive.clawArm.getPosition() + 0.05*gamepad2.left_stick_y);
+            }
+            else if (gamepad2.left_stick_y < -0.1) {
+                drive.clawArm.setPosition(drive.clawArm.getPosition() - 0.05*gamepad2.left_stick_y);
+            }
 
             telemetry.addData("Lift Pos", drive.lift.getCurrentPosition());
             telemetry.addData("Lift Target", drive.lift.getTargetPosition());

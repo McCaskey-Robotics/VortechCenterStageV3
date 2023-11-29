@@ -19,6 +19,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAcceleration
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -27,6 +28,7 @@ import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.hardware.configuration.annotations.ServoType;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -73,7 +75,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private TrajectoryFollower follower;
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     public DcMotorEx lift, intake, armBase;
-    public Servo claw, clawArm;
+    public Servo claw, launcher, clawArm;
     private List<DcMotorEx> motors;
 
     private IMU imu;
@@ -110,11 +112,14 @@ public class SampleMecanumDrive extends MecanumDrive {
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         armBase = hardwareMap.get(DcMotorEx.class, "armBase");
 
+        intake.setDirection(DcMotorSimple.Direction.REVERSE);
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        armBase.setDirection(DcMotorSimple.Direction.REVERSE);
 
         claw = hardwareMap.get(Servo.class, "claw");
         clawArm = hardwareMap.get(Servo.class, "clawArm");
+        launcher = hardwareMap.get(Servo.class, "launcher");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront, lift, intake, armBase);
 
