@@ -43,7 +43,7 @@ public class TeleOP extends LinearOpMode {
             }
 
             //Set power to arm
-            drive.armBase.setPower(gamepad2.right_stick_y / 3);
+            drive.armBase.setPower(gamepad2.right_stick_y / 2);
 
             if (gamepad2.a){
                 drive.claw.setPosition(1);
@@ -52,21 +52,21 @@ public class TeleOP extends LinearOpMode {
                 drive.claw.setPosition(0);
             }
 
-            if (gamepad1.dpad_up) {
+            if (gamepad2.dpad_up) {
                 drive.launcher.setPosition(0.42);
             }
-            else if (gamepad1.dpad_down) {
+            else if (gamepad2.dpad_down) {
                 drive.launcher.setPosition(0.6);
             }
 
-            if (gamepad2.left_stick_y > 0.1) {
-                drive.clawArm.setPosition(drive.clawArm.getPosition() + 0.05*gamepad2.left_stick_y);
+            if (gamepad2.left_stick_y > 0.1 && drive.clawArm.getPosition() < 0.87) {
+                drive.clawArm.setPosition(drive.clawArm.getPosition() - 0.003*gamepad2.left_stick_y);
             }
             else if (gamepad2.left_stick_y < -0.1) {
-                drive.clawArm.setPosition(drive.clawArm.getPosition() - 0.05*gamepad2.left_stick_y);
+                drive.clawArm.setPosition(drive.clawArm.getPosition() - 0.003*gamepad2.left_stick_y);
             }
 
-            telemetry.addData("Lift Pos", drive.lift.getCurrentPosition());
+            telemetry.addData("Claw Pos", drive.clawArm.getPosition());
             telemetry.addData("Lift Target", drive.lift.getTargetPosition());
             telemetry.update();
         }
