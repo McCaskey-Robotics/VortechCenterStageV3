@@ -84,6 +84,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
 
+    public ArmState armState = ArmState.manual;
+
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -324,5 +326,78 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public static TrajectoryAccelerationConstraint getAccelerationConstraint(double maxAccel) {
         return new ProfileAccelerationConstraint(maxAccel);
+    }
+
+    public enum ArmState {
+        manual,
+        initial,
+        prePickup,
+        pickup,
+        midpoint1,
+        midpoint2,
+        end
+    }
+
+    public void updateArm(boolean start) {
+        switch(armState){
+            case initial:
+                if (start) {
+                    armBase.setTargetPosition(-400);
+                    armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armBase.setPower(1);
+                    clawArm.setPosition(0);
+
+                    armState = ArmState.prePickup;
+                }
+                break;
+            case prePickup:
+                if ((Math.abs(armBase.getCurrentPosition() + 400) < 10) && (Math.abs(clawArm.getPosition()) < 0.01)) {
+                    armBase.setTargetPosition(40);
+                    armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    armBase.setPower(1);
+                    clawArm.setPosition(0.18);
+
+                    armState = ArmState.pickup;
+                }
+                break;
+            case pickup:
+                //If claw and arm are close to target positions
+                if ((Math.abs(armBase.getCurrentPosition() - 40) < 10) && (Math.abs(clawArm.getPosition() -0.18) < 0.01)) {
+                    armBase.setTargetPosition(120);
+                    armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    clawArm.setPosition(0.25);
+                    claw.setPosition(0); //close claw
+
+                    armState = ArmState.midpoint1;
+                }
+                break;
+            case midpoint1:
+                if ((Math.abs(armBase.getCurrentPosition() - 120) < 10) && (Math.abs(clawArm.getPosition() -0.25) < 0.01)) {
+                    armBase.setTargetPosition(0);
+                    armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    clawArm.setPosition(0.16);
+
+                    armState = ArmState.midpoint2;
+                }
+                break;
+            case midpoint2:
+                if ((Math.abs(armBase.getCurrentPosition()) < 10) && (Math.abs(clawArm.getPosition() -0.16) < 0.01)) {
+                    armBase.setTargetPosition(-100);
+                    armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    clawArm.setPosition(0.06);
+
+                    armState = ArmState.end;
+                }
+                break;
+            case end:
+                if ((Math.abs(armBase.getCurrentPosition() + 100) < 10) && (Math.abs(clawArm.getPosition() -0.06) < 0.01)) {
+                    armBase.setTargetPosition(-400);
+                    armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    clawArm.setPosition(0);
+
+                    armState = ArmState.manual;
+                }
+                break;
+        }
     }
 }

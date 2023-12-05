@@ -20,6 +20,8 @@ public class Auto extends LinearOpMode {
         Pose2d startPose = new Pose2d(-64, -36, 0);
         drive.setPoseEstimate(startPose);
 
+        drive.armState = drive.armState.pickup;
+
         Trajectory zone1 = drive.trajectoryBuilder(startPose)
                 .splineTo(new Vector2d(-40,-36), Math.PI/2)
                 .build();
@@ -109,8 +111,45 @@ public class Auto extends LinearOpMode {
                 drive.followTrajectoryAsync(zoneUnknown);
             }
 
+            //bring arm out of chassis
+            drive.updateArm(true);
+
+            //place pixel
+            drive.armBase.setTargetPosition(-1300);
+            drive.clawArm.setPosition(0.6);
+            sleep(500);
+            drive.claw.setPosition(0.9);
+
+            //bring arm back into chassis
+            drive.armBase.setTargetPosition(40);
+            drive.clawArm.setPosition(0.18);
+            drive.armState = drive.armState.pickup;
+
+            //intake second pixel
+            drive.intake.setPower(1);
+            sleep(200);
+            drive.intake.setPower(0);
+
             //Drive to the backboard and the correct pix pos
-            drive.followTrajectoryAsync(backBoard);
+            drive.followTrajectory(backBoard);
+
+            drive.updateArm(true);
+
+            //wait for arm to finish moving
+            while (drive.armBase.isBusy()) {
+            }
+            //move arm to backboard
+            drive.armBase.setTargetPosition(-800);
+            drive.clawArm.setPosition(0.5);
+            while (drive.armBase.isBusy()) {
+            }
+            //drop pixel
+            drive.claw.setPosition(0.9);
+            sleep(100);
+
+            //bring arm back into chassis
+            drive.armBase.setTargetPosition(40);
+            drive.clawArm.setPosition(0.18);
 
             //Park
             drive.followTrajectoryAsync(park);
