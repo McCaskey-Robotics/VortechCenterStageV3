@@ -58,10 +58,10 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(0, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(0, 0, 0);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(4, 0, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(4, 0, 1);
 
-    public static double LATERAL_MULTIPLIER = 1;
+    public static double LATERAL_MULTIPLIER = 1.54;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
@@ -75,9 +75,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     private TrajectoryFollower follower;
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     public DcMotorEx lift, intake, armBase;
-    public Servo claw, launcher, clawArm;
+    public Servo claw, launcher, clawArm, armResetter;
     private List<DcMotorEx> motors;
-
     private IMU imu;
     private VoltageSensor batteryVoltageSensor;
 
@@ -101,11 +100,6 @@ public class SampleMecanumDrive extends MecanumDrive {
         }
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-        imu = hardwareMap.get(IMU.class, "imu");
-        IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-                DriveConstants.LOGO_FACING_DIR, DriveConstants.USB_FACING_DIR));
-        imu.initialize(parameters);
-
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftRear");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightRear");
@@ -122,6 +116,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         claw = hardwareMap.get(Servo.class, "claw");
         clawArm = hardwareMap.get(Servo.class, "clawArm");
         launcher = hardwareMap.get(Servo.class, "launcher");
+        armResetter = hardwareMap.get(Servo.class, "armResetter");
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront, lift, intake, armBase);
 
@@ -147,7 +142,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         List<Integer> lastTrackingEncVels = new ArrayList<>();
 
         // TODO: if desired, use setLocalizer() to change the localization method
-        // setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, lastTrackingEncPositions, lastTrackingEncVels));
+         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap, lastTrackingEncPositions, lastTrackingEncVels));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(
                 follower, HEADING_PID, batteryVoltageSensor,
@@ -309,7 +304,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        return 0;
     }
 
     @Override
@@ -338,23 +333,22 @@ public class SampleMecanumDrive extends MecanumDrive {
         end
     }
 
-    public void updateArm(boolean start) {
+    public void updateArm() {
         switch(armState){
             case initial:
-                if (start) {
-                    armBase.setTargetPosition(-400);
-                    armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armBase.setPower(1);
-                    clawArm.setPosition(0);
+                armBase.setTargetPosition(-350);
+                armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                armBase.setPower(0.4);
+                clawArm.setPosition(0);
+                claw.setPosition(0.4);
 
-                    armState = ArmState.prePickup;
-                }
+                armState = ArmState.prePickup;
                 break;
             case prePickup:
-                if ((Math.abs(armBase.getCurrentPosition() + 400) < 10) && (Math.abs(clawArm.getPosition()) < 0.01)) {
-                    armBase.setTargetPosition(40);
+                if ((Math.abs(armBase.getCurrentPosition() + 350) < 10) && (Math.abs(clawArm.getPosition()) < 0.01)) {
+                    armBase.setTargetPosition(-50);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    armBase.setPower(1);
+                    armBase.setPower(0.2);
                     clawArm.setPosition(0.18);
 
                     armState = ArmState.pickup;
@@ -362,41 +356,47 @@ public class SampleMecanumDrive extends MecanumDrive {
                 break;
             case pickup:
                 //If claw and arm are close to target positions
-                if ((Math.abs(armBase.getCurrentPosition() - 40) < 10) && (Math.abs(clawArm.getPosition() -0.18) < 0.01)) {
-                    armBase.setTargetPosition(120);
+                if ((Math.abs(armBase.getCurrentPosition() + 50) < 10) && (Math.abs(clawArm.getPosition() -0.18) < 0.01)) {
+                    armBase.setTargetPosition(0);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    clawArm.setPosition(0.25);
-                    claw.setPosition(0); //close claw
+                    clawArm.setPosition(0.3);
 
                     armState = ArmState.midpoint1;
                 }
                 break;
             case midpoint1:
-                if ((Math.abs(armBase.getCurrentPosition() - 120) < 10) && (Math.abs(clawArm.getPosition() -0.25) < 0.01)) {
-                    armBase.setTargetPosition(0);
+                if ((Math.abs(armBase.getCurrentPosition()) < 10) && (Math.abs(clawArm.getPosition() -0.3) < 0.01)) {
+                    claw.setPosition(0); //close claw
+                    armBase.setTargetPosition(-30);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    clawArm.setPosition(0.16);
+                    clawArm.setPosition(0.25);
 
                     armState = ArmState.midpoint2;
                 }
                 break;
             case midpoint2:
-                if ((Math.abs(armBase.getCurrentPosition()) < 10) && (Math.abs(clawArm.getPosition() -0.16) < 0.01)) {
-                    armBase.setTargetPosition(-100);
+                if ((Math.abs(armBase.getCurrentPosition() + 30) < 10) && (Math.abs(clawArm.getPosition() -0.25) < 0.01)) {
+                    armBase.setTargetPosition(-300);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    clawArm.setPosition(0.06);
+                    armBase.setPower(0.4);
+                    clawArm.setPosition(0);
 
                     armState = ArmState.end;
                 }
                 break;
             case end:
-                if ((Math.abs(armBase.getCurrentPosition() + 100) < 10) && (Math.abs(clawArm.getPosition() -0.06) < 0.01)) {
-                    armBase.setTargetPosition(-400);
+                if ((Math.abs(armBase.getCurrentPosition() + 300) < 10) && (Math.abs(clawArm.getPosition()) < 0.01)) {
+                    armBase.setTargetPosition(-330);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     clawArm.setPosition(0);
+                }
 
+                if ((Math.abs(armBase.getCurrentPosition() + 330) < 10) && (Math.abs(clawArm.getPosition()) < 0.01)) {
                     armState = ArmState.manual;
                 }
+                break;
+            case manual:
+                armBase.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
                 break;
         }
     }

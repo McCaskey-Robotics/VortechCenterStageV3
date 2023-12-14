@@ -2,13 +2,14 @@ package org.firstinspires.ftc.teamcode.drive;
 
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvPipeline;
-
+@TeleOp(group = "drive")
 public class SignalDetection extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
