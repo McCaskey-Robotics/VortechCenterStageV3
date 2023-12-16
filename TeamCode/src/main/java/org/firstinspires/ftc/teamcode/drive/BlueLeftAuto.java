@@ -128,10 +128,10 @@ public class BlueLeftAuto extends LinearOpMode {
             }
 
             //place pixel
-            drive.armBase.setTargetPosition(-1800);
+            drive.armBase.setTargetPosition(-1700);
             while (drive.armBase.isBusy()){} //Wait for arm to move
             drive.clawArm.setPosition(0.6);
-            sleep(500);
+            sleep(200);
             drive.claw.setPosition(0.9);
 
             //bring arm back into chassis

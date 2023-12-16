@@ -15,9 +15,9 @@ import org.openftc.easyopencv.OpenCvPipeline;
  */
 public class SignalPipeline extends OpenCvPipeline {
     //Set coords of bounding boxes
-    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0, 440);
-    static final Point Region2_TOPLEFT_ANCHOR_POINT = new Point(590, 400);
-    static final Point Region3_TOPLEFT_ANCHOR_POINT = new Point(1180, 440);
+    static final Point REGION1_TOPLEFT_ANCHOR_POINT = new Point(0, 240);
+    static final Point Region2_TOPLEFT_ANCHOR_POINT = new Point(590, 170);
+    static final Point Region3_TOPLEFT_ANCHOR_POINT = new Point(1180, 240);
     static final int REGION_WIDTH = 100;
     static final int REGION_HEIGHT = 200;
 
@@ -168,6 +168,7 @@ public class SignalPipeline extends OpenCvPipeline {
         // Release and return input
         areaMat1.release();
         areaMat2.release();
+        areaMat3.release();
         return input;
     }
 
