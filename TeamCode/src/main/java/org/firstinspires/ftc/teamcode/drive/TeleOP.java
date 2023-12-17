@@ -56,10 +56,10 @@ public class TeleOP extends LinearOpMode {
 
             //Set power to intake
             if (gamepad1.right_bumper) {
-                drive.intake.setPower(-gamepad1.right_trigger/2);
+                drive.intake.setPower(-gamepad1.right_trigger/1.5);
             }
             else {
-                drive.intake.setPower(gamepad1.right_trigger/2);
+                drive.intake.setPower(gamepad1.right_trigger/1.5);
             }
             //Set power to arm
             if (drive.armState == drive.armState.manual){

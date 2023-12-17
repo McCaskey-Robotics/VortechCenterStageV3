@@ -44,10 +44,10 @@ public class ARedRightAuto extends LinearOpMode {
                 .lineTo(new Vector2d(8, -32))
                 .build();
         TrajectorySequence traj22 = drive.trajectorySequenceBuilder(traj2.end())
-                .lineTo(new Vector2d(12,-36))
+                .lineTo(new Vector2d(16,-36))
                 .turn(-Math.PI)
-                .lineTo(new Vector2d(12,-60))
-                .lineTo(new Vector2d(55, -60))
+                .lineTo(new Vector2d(16,-54))
+                .lineTo(new Vector2d(55, -54))
                 .build();
         //Zone 3 trajectories
         TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj1.end())

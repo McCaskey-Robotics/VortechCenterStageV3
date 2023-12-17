@@ -346,7 +346,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                 break;
             case prePickup:
                 if ((Math.abs(armBase.getCurrentPosition() + 350) < 10) && (Math.abs(clawArm.getPosition()) < 0.01)) {
-                    armBase.setTargetPosition(-50);
+                    armBase.setTargetPosition(-60);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armBase.setPower(0.2);
                     clawArm.setPosition(0.18);
@@ -356,7 +356,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                 break;
             case pickup:
                 //If claw and arm are close to target positions
-                if ((Math.abs(armBase.getCurrentPosition() + 50) < 10) && (Math.abs(clawArm.getPosition() -0.18) < 0.01)) {
+                if ((Math.abs(armBase.getCurrentPosition() + 60) < 10) && (Math.abs(clawArm.getPosition() -0.18) < 0.01)) {
                     armBase.setTargetPosition(0);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     clawArm.setPosition(0.3);
@@ -367,15 +367,15 @@ public class SampleMecanumDrive extends MecanumDrive {
             case midpoint1:
                 if ((Math.abs(armBase.getCurrentPosition()) < 10) && (Math.abs(clawArm.getPosition() -0.3) < 0.01)) {
                     claw.setPosition(0); //close claw
-                    armBase.setTargetPosition(-30);
+                    armBase.setTargetPosition(-20);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    clawArm.setPosition(0.25);
+                    clawArm.setPosition(0.2);
 
                     armState = ArmState.midpoint2;
                 }
                 break;
             case midpoint2:
-                if ((Math.abs(armBase.getCurrentPosition() + 30) < 10) && (Math.abs(clawArm.getPosition() -0.25) < 0.01)) {
+                if ((Math.abs(armBase.getCurrentPosition() + 20) < 10) && (Math.abs(clawArm.getPosition() -0.2) < 0.01)) {
                     armBase.setTargetPosition(-300);
                     armBase.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     armBase.setPower(0.4);

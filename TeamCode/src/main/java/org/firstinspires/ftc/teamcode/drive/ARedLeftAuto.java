@@ -33,23 +33,23 @@ public class ARedLeftAuto extends LinearOpMode {
                 .lineTo(new Vector2d(-36,-32)) //drive to tape
                 .build();
         TrajectorySequence traj12 = drive.trajectorySequenceBuilder(traj1.end())
-                .lineTo(new Vector2d(-36, -34)) //reset to center of square
+                .lineTo(new Vector2d(-36, -38)) //reset to center of square
                 .turn(-Math.PI/2)
-                .lineTo(new Vector2d(-36, -10))
-                .lineTo(new Vector2d(50, -10)) //park
-                .strafeRight(12)
+                .lineTo(new Vector2d(-60, -38))
+                .lineTo(new Vector2d(-60, -10))
+                .lineTo(new Vector2d(60, -14)) //park
+                .strafeRight(30)
                 .build();
         //Zone 1 trajectories
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(traj1.end())
                 .turn(Math.PI/2)
-                .lineTo(new Vector2d(-40, -32))
                 .build();
         TrajectorySequence traj22 = drive.trajectorySequenceBuilder(traj2.end())
-                .lineTo(new Vector2d(-36,-32))
+                .lineTo(new Vector2d(-32,-32))
                 .turn(-Math.PI)
-                .lineTo(new Vector2d(-36, -13))
+                .lineTo(new Vector2d(-32, -13))
                 .lineTo(new Vector2d(62, -13))
-                .strafeRight(12)
+                .strafeRight(20)
                 .build();
         //Zone 3 trajectories
         TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj1.end())
@@ -60,7 +60,7 @@ public class ARedLeftAuto extends LinearOpMode {
                 .lineTo(new Vector2d(-38,-32))
                 .lineTo(new Vector2d(-38, -13))
                 .lineTo(new Vector2d(62, -13))
-                .strafeRight(12)
+                .strafeRight(30)
                 .build();
 
 

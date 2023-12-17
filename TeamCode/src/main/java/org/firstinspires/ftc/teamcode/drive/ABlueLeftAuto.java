@@ -36,7 +36,7 @@ public class ABlueLeftAuto extends LinearOpMode {
                 .lineTo(new Vector2d(12, 38)) //reset to center of square
                 .turn(Math.PI/2)
                 .lineTo(new Vector2d(12, 64))
-                .lineTo(new Vector2d(62, 64)) //park
+                .lineTo(new Vector2d(80, 64)) //park
                 .build();
         //Zone 1 trajectories
         TrajectorySequence traj2 = drive.trajectorySequenceBuilder(traj1.end())
@@ -46,7 +46,7 @@ public class ABlueLeftAuto extends LinearOpMode {
         TrajectorySequence traj22 = drive.trajectorySequenceBuilder(traj2.end())
                 .lineTo(new Vector2d(12,32))
                 .lineTo(new Vector2d(12, 64))
-                .lineTo(new Vector2d(62, 64))
+                .lineTo(new Vector2d(80, 64))
                 .build();
         //Zone 3 trajectories
         TrajectorySequence traj3 = drive.trajectorySequenceBuilder(traj1.end())
@@ -56,7 +56,7 @@ public class ABlueLeftAuto extends LinearOpMode {
         TrajectorySequence traj32 = drive.trajectorySequenceBuilder(traj3.end())
                 .lineTo(new Vector2d(14, 32))
                 .lineTo(new Vector2d(14, 64))
-                .lineTo(new Vector2d(62,64))
+                .lineTo(new Vector2d(80,64))
                 .build();
 
 
